@@ -1,0 +1,37 @@
+rules_version = '2';
+
+// Souqna — Cloud Storage security rules.
+// Users can only write images (< 5 MB) into their own folder. Files are
+// immutable once uploaded; owners and admins may delete them.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function isImage() {
+      return request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp|gif|heic)');
+    }
+    function isAdmin() {
+      return signedIn() && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    match /listings/{uid}/{fileId} {
+      allow read: if true;
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && isImage();
+      allow update: if false;
+      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    match /avatars/{uid}/{fileId} {
+      allow read: if true;
+      allow create: if signedIn() && request.auth.uid == uid && isImage();
+      allow update: if false;
+      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

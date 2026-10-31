@@ -1,0 +1,247 @@
+rules_version = '2';
+
+// Souqna — Firestore security rules.
+// The client is never trusted: every write is validated here (ownership,
+// allowed fields, types, sizes, state transitions). Admin power comes only
+// from a document at /admins/{uid}, which only existing admins can create.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(me())); }
+    function verified() { return signedIn() && request.auth.token.email_verified == true; }
+    function notBanned() {
+      return exists(/databases/$(database)/documents/users/$(me()))
+        && get(/databases/$(database)/documents/users/$(me())).data.status != 'banned';
+    }
+    // Verified, not banned: required to post ads and chat.
+    function canWrite() { return verified() && notBanned(); }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function autoApprove() {
+      return exists(/databases/$(database)/documents/settings/app)
+        && get(/databases/$(database)/documents/settings/app).data.get('autoApprove', false) == true;
+    }
+
+    // ---------- users (public profile) ----------
+    match /users/{userId} {
+      function validProfile(d) {
+        return str(d.name, 2, 60) && str(d.photoUrl, 0, 1000) && str(d.city, 0, 40) && str(d.bio, 0, 300);
+      }
+
+      allow read: if true;
+
+      allow create: if signedIn() && me() == userId
+        && request.resource.data.keys().hasOnly(['name', 'photoUrl', 'city', 'bio', 'status', 'createdAt'])
+        && validProfile(request.resource.data)
+        && request.resource.data.status == 'active'
+        && request.resource.data.createdAt == request.time;
+
+      allow update: if
+        // Owner edits their public profile (cannot touch status / createdAt).
+        (signedIn() && me() == userId && resource.data.status != 'banned'
+          && changed().hasOnly(['name', 'photoUrl', 'city', 'bio'])
+          && validProfile(request.resource.data))
+        // Admin bans / unbans (never themselves).
+        || (isAdmin() && userId != me()
+          && changed().hasOnly(['status', 'statusChangedAt'])
+          && request.resource.data.status in ['active', 'banned']);
+
+      allow delete: if false;
+
+      // Private contact info: owner + admins only.
+      match /private/{docId} {
+        allow read: if signedIn() && (me() == userId || isAdmin());
+        allow create: if signedIn() && me() == userId && docId == 'info'
+          && request.resource.data.keys().hasOnly(['email', 'phone'])
+          && request.resource.data.email == request.auth.token.email.lower()
+          && str(request.resource.data.phone, 0, 20);
+        allow update: if signedIn() && me() == userId && docId == 'info'
+          && changed().hasOnly(['phone'])
+          && str(request.resource.data.phone, 0, 20);
+        allow delete: if false;
+      }
+
+      match /favorites/{listingId} {
+        allow read, delete: if signedIn() && me() == userId;
+        allow create: if signedIn() && me() == userId
+          && request.resource.data.keys().hasOnly(['createdAt'])
+          && request.resource.data.createdAt == request.time;
+        allow update: if false;
+      }
+    }
+
+    // ---------- admins ----------
+    match /admins/{adminId} {
+      allow get: if signedIn() && (me() == adminId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['grantedBy', 'createdAt'])
+        && request.resource.data.grantedBy == me()
+        && request.resource.data.createdAt == request.time;
+      // Admins cannot remove themselves (prevents locking everyone out).
+      allow delete: if isAdmin() && adminId != me();
+      allow update: if false;
+    }
+
+    // ---------- catalog ----------
+    match /categories/{catId} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && catId.matches('^[a-z0-9-]{2,40}$')
+        && request.resource.data.keys().hasOnly(['nameEn', 'nameAr', 'icon', 'order', 'active'])
+        && str(request.resource.data.nameEn, 1, 40)
+        && str(request.resource.data.nameAr, 1, 40)
+        && str(request.resource.data.icon, 1, 30)
+        && request.resource.data.order is int
+        && request.resource.data.active is bool;
+      allow delete: if isAdmin();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() && docId == 'app'
+        && request.resource.data.keys().hasOnly(['autoApprove', 'maxImages', 'supportPhone', 'supportEmail', 'announcementEn', 'announcementAr', 'updatedAt'])
+        && request.resource.data.autoApprove is bool
+        && request.resource.data.maxImages is int
+        && request.resource.data.maxImages >= 1 && request.resource.data.maxImages <= 10
+        && str(request.resource.data.supportPhone, 0, 20)
+        && str(request.resource.data.supportEmail, 0, 100)
+        && str(request.resource.data.announcementEn, 0, 200)
+        && str(request.resource.data.announcementAr, 0, 200);
+    }
+
+    // ---------- listings ----------
+    match /listings/{listingId} {
+      function contentKeys() {
+        return ['title', 'description', 'price', 'currency', 'negotiable', 'categoryId', 'city', 'condition',
+                'images', 'contactPhone', 'showPhone', 'ownerName', 'searchKeywords'];
+      }
+      function validContent(d) {
+        return str(d.title, 5, 100)
+          && str(d.description, 10, 4000)
+          && d.price is number && d.price >= 0 && d.price <= 100000000
+          && d.currency == 'JOD'
+          && d.negotiable is bool
+          && str(d.categoryId, 1, 40) && exists(/databases/$(database)/documents/categories/$(d.categoryId))
+          && str(d.city, 1, 40)
+          && d.condition in ['new', 'used']
+          && d.images is list && d.images.size() >= 1 && d.images.size() <= 10
+          && str(d.contactPhone, 0, 20)
+          && d.showPhone is bool
+          && (d.showPhone || d.contactPhone == '')
+          && str(d.ownerName, 1, 60)
+          && d.searchKeywords is list && d.searchKeywords.size() <= 80;
+      }
+      function newStatusOk(s) { return s == 'pending' || (s == 'active' && autoApprove()); }
+
+      // Public sees active & sold; owners and admins see everything they own / moderate.
+      allow read: if resource.data.status in ['active', 'sold']
+        || (signedIn() && (resource.data.ownerId == me() || isAdmin()));
+
+      allow create: if canWrite()
+        && request.resource.data.keys().hasOnly(contentKeys().concat(['ownerId', 'status', 'rejectionReason', 'featured', 'views', 'createdAt', 'updatedAt']))
+        && request.resource.data.keys().hasAll(contentKeys())
+        && request.resource.data.ownerId == me()
+        && validContent(request.resource.data)
+        && newStatusOk(request.resource.data.status)
+        && request.resource.data.rejectionReason == ''
+        && request.resource.data.featured == false
+        && request.resource.data.views == 0
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if
+        // Owner marks an active ad as sold.
+        (canWrite() && resource.data.ownerId == me()
+          && changed().hasOnly(['status', 'updatedAt'])
+          && resource.data.status == 'active'
+          && request.resource.data.status == 'sold')
+        // Owner edits content; the ad goes back to review unless auto-approve is on.
+        || (canWrite() && resource.data.ownerId == me()
+          && changed().hasOnly(contentKeys().concat(['status', 'updatedAt']))
+          && validContent(request.resource.data)
+          && newStatusOk(request.resource.data.status)
+          && request.resource.data.updatedAt == request.time)
+        // Any other signed-in user may add exactly one view to an active ad.
+        || (signedIn() && resource.data.ownerId != me()
+          && resource.data.status == 'active'
+          && changed().hasOnly(['views'])
+          && request.resource.data.views == resource.data.views + 1)
+        // Admin moderation.
+        || (isAdmin()
+          && changed().hasOnly(['status', 'rejectionReason', 'moderatedAt', 'featured'])
+          && request.resource.data.status in ['pending', 'active', 'rejected', 'sold']
+          && str(request.resource.data.rejectionReason, 0, 300)
+          && request.resource.data.featured is bool);
+
+      allow delete: if signedIn() && (resource.data.ownerId == me() || isAdmin());
+    }
+
+    // ---------- reports ----------
+    match /reports/{reportId} {
+      allow create: if signedIn() && notBanned()
+        && request.resource.data.keys().hasOnly(['reporterId', 'listingId', 'listingTitle', 'reason', 'details', 'status', 'createdAt'])
+        && request.resource.data.reporterId == me()
+        && str(request.resource.data.listingId, 1, 64)
+        && str(request.resource.data.listingTitle, 0, 100)
+        && request.resource.data.reason in ['spam', 'fraud', 'prohibited', 'wrongCategory', 'offensive', 'other']
+        && str(request.resource.data.details, 0, 500)
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && changed().hasOnly(['status', 'handledAt'])
+        && request.resource.data.status in ['open', 'resolved', 'dismissed'];
+    }
+
+    // ---------- chats ----------
+    match /chats/{chatId} {
+      function participant(d) { return signedIn() && me() in d.participants; }
+
+      // `resource == null` lets a buyer check whether their own chat exists yet.
+      allow get: if resource == null || participant(resource.data) || isAdmin();
+      allow list: if signedIn() && me() in resource.data.participants;
+
+      allow create: if canWrite()
+        && request.resource.data.keys().hasOnly(['participants', 'buyerId', 'sellerId', 'listingId', 'listingTitle', 'listingImage',
+                                                 'names', 'lastMessage', 'lastSenderId', 'lastMessageAt', 'unread', 'createdAt'])
+        && request.resource.data.buyerId == me()
+        && request.resource.data.sellerId != me()
+        && chatId == request.resource.data.listingId + '_' + me()
+        && request.resource.data.participants == [me(), request.resource.data.sellerId]
+        && exists(/databases/$(database)/documents/listings/$(request.resource.data.listingId))
+        && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.ownerId == request.resource.data.sellerId
+        && get(/databases/$(database)/documents/listings/$(request.resource.data.listingId)).data.status == 'active'
+        && request.resource.data.lastMessage == ''
+        && request.resource.data.names is map && request.resource.data.names.size() == 2
+        && str(request.resource.data.listingTitle, 0, 100);
+
+      allow update: if canWrite() && participant(resource.data)
+        && changed().hasOnly(['lastMessage', 'lastSenderId', 'lastMessageAt', 'unread'])
+        && str(request.resource.data.lastMessage, 0, 1000)
+        && (request.resource.data.lastSenderId == resource.data.lastSenderId || request.resource.data.lastSenderId == me())
+        && request.resource.data.unread.keys().hasOnly(resource.data.participants);
+
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        function chat() { return get(/databases/$(database)/documents/chats/$(chatId)).data; }
+        allow read: if signedIn() && (me() in chat().participants || isAdmin());
+        allow create: if canWrite() && me() in chat().participants
+          && request.resource.data.keys().hasOnly(['senderId', 'text', 'createdAt'])
+          && request.resource.data.senderId == me()
+          && str(request.resource.data.text, 1, 1000)
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+
+    // Deny everything else.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

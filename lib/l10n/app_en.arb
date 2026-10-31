@@ -1,0 +1,350 @@
+{
+  "@@locale": "en",
+  "appName": "Souqna",
+  "otherLanguage": "العربية",
+  "home": "Home",
+  "browse": "Browse",
+  "chats": "Chats",
+  "account": "Account",
+  "postAd": "Post ad",
+  "language": "Language",
+  "categories": "Categories",
+  "category": "Category",
+  "viewAll": "View all",
+  "featured": "Featured",
+  "featuredAds": "Featured ads",
+  "latestAds": "Latest ads",
+  "noAdsYet": "No ads yet",
+  "beFirstToPost": "Be the first to post an ad.",
+  "noCategories": "No categories yet",
+  "searchHint": "What are you looking for?",
+  "filters": "Filters",
+  "all": "All",
+  "allCities": "All cities",
+  "city": "City",
+  "priceRange": "Price range",
+  "minPrice": "Min",
+  "maxPrice": "Max",
+  "condition": "Condition",
+  "conditionNew": "New",
+  "conditionUsed": "Used",
+  "any": "Any",
+  "sortBy": "Sort by",
+  "sortNewest": "Newest",
+  "sortPriceLow": "Price: low to high",
+  "sortPriceHigh": "Price: high to low",
+  "reset": "Reset",
+  "showResults": "Show results",
+  "noResults": "No results",
+  "tryDifferentFilters": "Try a different search or filters.",
+  "somethingWentWrong": "Something went wrong",
+  "tryAgainLater": "Please try again.",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "save": "Save",
+  "saveChanges": "Save changes",
+  "saved": "Saved",
+  "close": "Close",
+  "send": "Send",
+  "edit": "Edit",
+  "delete": "Delete",
+  "remove": "Remove",
+  "share": "Share",
+  "you": "You",
+  "status": "Status",
+  "reason": "Reason",
+  "welcomeBack": "Welcome back",
+  "loginSubtitle": "Log in to post ads, chat and save favorites.",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "login": "Log in",
+  "logout": "Log out",
+  "logoutConfirm": "Do you want to log out?",
+  "noAccount": "Don't have an account?",
+  "haveAccount": "Already have an account?",
+  "createAccount": "Create account",
+  "continueAsGuest": "Continue as guest",
+  "registerSubtitle": "Join to buy and sell in minutes.",
+  "fullName": "Full name",
+  "phone": "Phone",
+  "confirmPassword": "Confirm password",
+  "passwordsDontMatch": "Passwords don't match",
+  "acceptTerms": "I agree to the Terms of Use and Privacy Policy",
+  "mustAcceptTerms": "Please accept the terms to continue",
+  "verificationSent": "Verification email sent. Check your inbox.",
+  "resetPassword": "Reset password",
+  "resetSubtitle": "Enter your email and we'll send you a reset link.",
+  "resetSent": "If an account exists for this email, a reset link has been sent.",
+  "sendResetLink": "Send reset link",
+  "sendAgain": "Send again",
+  "fieldRequired": "This field is required",
+  "invalidEmail": "Enter a valid email",
+  "invalidPhone": "Enter a valid phone number",
+  "invalidPrice": "Enter a valid price",
+  "passwordTooShort": "At least 8 characters",
+  "passwordWeak": "Use letters and numbers",
+  "wrongCredentials": "Incorrect email or password",
+  "emailInUse": "This email is already registered",
+  "accountDisabled": "This account has been disabled",
+  "tooManyRequests": "Too many attempts. Try again later.",
+  "networkError": "No internet connection",
+  "verifyEmailTitle": "Verify your email",
+  "iVerified": "I've verified",
+  "resendEmail": "Resend email",
+  "notVerifiedYet": "Email not verified yet",
+  "verifyEmailToContinue": "Please verify your email to continue",
+  "accountBanned": "Your account has been suspended. Contact support.",
+  "notAllowed": "You don't have access to this page",
+  "backHome": "Back to home",
+  "adNotFound": "This ad is no longer available",
+  "negotiable": "Negotiable",
+  "description": "Description",
+  "seller": "Seller",
+  "chatWithSeller": "Chat with seller",
+  "showPhone": "Show phone",
+  "whatsappGreeting": "Hello, I'm interested in your ad",
+  "safetyTitle": "Stay safe",
+  "safetyTips": "Meet in public places, inspect the item before paying, and never send money in advance.",
+  "reportAd": "Report ad",
+  "reportSent": "Thanks. Our team will review it.",
+  "reportDetailsHint": "More details (optional)",
+  "moreFromSeller": "More from this seller",
+  "manageYourAd": "Manage your ad",
+  "markAsSold": "Mark as sold",
+  "markAsSoldConfirm": "The ad will be hidden from search.",
+  "deleteAd": "Delete ad",
+  "deleteAdConfirm": "This cannot be undone.",
+  "adDeleted": "Ad deleted",
+  "moderateInAdmin": "Moderate in admin",
+  "reasonSpam": "Spam or duplicate",
+  "reasonFraud": "Fraud or scam",
+  "reasonProhibited": "Prohibited item",
+  "reasonWrongCategory": "Wrong category",
+  "reasonOffensive": "Offensive content",
+  "reasonOther": "Other",
+  "statusPending": "Pending",
+  "statusActive": "Active",
+  "statusRejected": "Rejected",
+  "statusSold": "Sold",
+  "pendingExplain": "Your ad is being reviewed and will be visible once approved.",
+  "rejectedExplain": "This ad was rejected. Edit it and resubmit.",
+  "soldExplain": "This item has been sold.",
+  "editAd": "Edit ad",
+  "adTitle": "Title",
+  "adTitleHint": "e.g. iPhone 15 Pro 256GB, like new",
+  "descriptionHint": "Condition, specs, reason for selling…",
+  "price": "Price",
+  "contactPhone": "Contact phone",
+  "showPhoneOnAd": "Show my phone on the ad",
+  "showPhoneOnAdHint": "Buyers can call or WhatsApp you",
+  "photos": "Photos",
+  "photosHint": "The first photo is the cover. Clear photos sell faster.",
+  "addPhotos": "Add",
+  "cover": "Cover",
+  "makeCover": "Make cover",
+  "addAtLeastOnePhoto": "Add at least one photo",
+  "imageTooLarge": "Image is larger than 5 MB",
+  "publishAd": "Publish ad",
+  "adPublished": "Your ad is live",
+  "adSubmittedForReview": "Submitted. Your ad will appear after review.",
+  "editReReview": "Saving changes sends the ad back for review.",
+  "loginToChat": "Log in to see your chats",
+  "noChats": "No conversations yet",
+  "noChatsHint": "Message a seller from any ad to start.",
+  "sayHello": "Say hello 👋",
+  "typeMessage": "Type a message…",
+  "messageNotSent": "Message not sent",
+  "myDashboard": "My dashboard",
+  "guestTitle": "You're browsing as a guest",
+  "guestSubtitle": "Log in to post ads, chat with sellers and save favorites.",
+  "settings": "Settings",
+  "verified": "Verified",
+  "notVerified": "Email not verified",
+  "admin": "Admin",
+  "editProfile": "Edit profile",
+  "activeAds": "Active ads",
+  "pendingAds": "Pending",
+  "totalViews": "Total views",
+  "myAds": "My ads",
+  "favorites": "Favorites",
+  "noAdsHere": "No ads here",
+  "noFavorites": "No favorites yet",
+  "noFavoritesHint": "Tap the heart on any ad to save it.",
+  "bio": "About you",
+  "profileSaved": "Profile updated",
+  "changePassword": "Change password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "passwordChanged": "Password changed",
+  "theme": "Appearance",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "contactSupport": "WhatsApp support",
+  "emailSupport": "Email support",
+  "about": "About",
+  "aboutText": "Buy and sell anything near you.",
+  "sellerAds": "Seller's ads",
+  "memberSinceLabel": "Member since",
+  "adminDashboard": "Admin",
+  "backToApp": "Back to app",
+  "overview": "Overview",
+  "overviewSubtitle": "Live numbers across the marketplace.",
+  "adsModeration": "Ads",
+  "users": "Users",
+  "reports": "Reports",
+  "appSettings": "Settings",
+  "totalUsers": "Users",
+  "totalAds": "Total ads",
+  "pendingReview": "Pending review",
+  "openReports": "Open reports",
+  "bannedUsers": "Banned users",
+  "thisWeek": "this week",
+  "adsByStatus": "Ads by status",
+  "searchAdsAdmin": "Search by title, seller or ID",
+  "nothingToReview": "Nothing here",
+  "approve": "Approve",
+  "reject": "Reject",
+  "rejectAd": "Reject ad",
+  "rejectReasonHint": "Reason shown to the seller",
+  "adApproved": "Ad approved",
+  "adRejected": "Ad rejected",
+  "feature": "Feature",
+  "unfeature": "Unfeature",
+  "markedFeatured": "Ad is now featured",
+  "unfeatured": "Removed from featured",
+  "searchUsers": "Search users by name or UID",
+  "banned": "Banned",
+  "admins": "Admins",
+  "banUser": "Ban user",
+  "unbanUser": "Unban user",
+  "makeAdmin": "Make admin",
+  "removeAdmin": "Remove admin",
+  "viewAds": "View ads",
+  "addCategory": "Add category",
+  "editCategory": "Edit category",
+  "deleteCategory": "Delete category",
+  "deleteCategoryConfirm": "Existing ads keep their category ID.",
+  "seedCategoriesHint": "Load a ready-made set of bilingual categories to get started.",
+  "loadDefaultCategories": "Load default categories",
+  "categoryId": "ID (slug)",
+  "invalidSlug": "Lowercase letters, numbers and dashes only",
+  "nameEnglish": "Name (English)",
+  "nameArabic": "Name (Arabic)",
+  "order": "Order",
+  "icon": "Icon",
+  "reportOpen": "Open",
+  "reportResolved": "Resolved",
+  "reportDismissed": "Dismissed",
+  "noReports": "No reports",
+  "viewAd": "View ad",
+  "takeDownAd": "Take down ad",
+  "markResolved": "Resolve",
+  "dismiss": "Dismiss",
+  "reopen": "Reopen",
+  "autoApprove": "Auto-approve new ads",
+  "autoApproveHint": "When off, every new or edited ad waits for admin review.",
+  "supportWhatsapp": "Support WhatsApp number",
+  "supportEmail": "Support email",
+  "announcementEnglish": "Home announcement (English)",
+  "announcementArabic": "Home announcement (Arabic)",
+  "justNow": "Just now",
+  "tooShort": "At least {min} characters",
+  "@tooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "tooLong": "At most {max} characters",
+  "@tooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count, plural, =1{Yesterday} other{{count} days ago}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "viewsCount": "{count, plural, =0{No views} =1{1 view} other{{count} views}}",
+  "@viewsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberSince": "Member since {date}",
+  "@memberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyEmailBody": "We sent a link to {email}. Verify your email to post ads and chat.",
+  "@verifyEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "maxImagesReached": "Maximum {count} photos",
+  "@maxImagesReached": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "maxImagesPerAd": "Max photos per ad: {count}",
+  "@maxImagesPerAd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "banConfirm": "{name} won't be able to post, edit or chat.",
+  "@banConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "makeAdminConfirm": "{name} will get full access to the admin dashboard.",
+  "@makeAdminConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
+}
